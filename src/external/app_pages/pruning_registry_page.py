@@ -244,7 +244,7 @@ if authentication_status:
                             placeholder='Escolha uma opção')
                 col1, col2 = st.columns(2)
                 data_poda = col1.date_input('Data da poda:', datetime.datetime.now().date(), format='DD/MM/YYYY')
-                responsavel_poda = col2.text_input('Responsável:')
+                responsavel_poda = col2.text_input('Responsável pela poda:')
                 submited = st.form_submit_button('Registrar')
 
             if submited:           
