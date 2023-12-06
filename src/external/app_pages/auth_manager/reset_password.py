@@ -5,6 +5,7 @@ from src.adapters.controller import Controller
 
 
 def reset_password_page(authenticator, credentials, username, placeholder_msg):
+    st.session_state.username = st.session_state.username
     try:
         col1, col2 = st.columns(2)
         if "admin" == username:
