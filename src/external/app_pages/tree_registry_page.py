@@ -9,6 +9,8 @@ from streamlit_js_eval import get_geolocation
 
 from src.adapters import Controller
 
+st.session_state.username = st.session_state.username
+
 def tree_registry_page(username, user_dict):
     placeholder_messages = st.empty()
 

@@ -12,6 +12,8 @@ from streamlit_js_eval import get_geolocation
 from src.adapters import Controller
 from src.external.app_pages.auth_manager.authentication import streamlit_auth
 
+st.session_state.username = st.session_state.username
+
 def on_click_get_location():
     st.session_state.flag_btn_centralizar = True
     st.session_state.flag_folium_map = not st.session_state.flag_folium_map

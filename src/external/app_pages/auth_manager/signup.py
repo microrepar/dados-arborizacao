@@ -4,8 +4,8 @@ import streamlit as st  # pip install streamlit
 from src.adapters import Controller
 
 
-def signup_page(authenticator, credentials, username):    
-
+def signup_page(authenticator, credentials, username):
+    
     set_usernames = set(credentials['usernames'])
 
     try:

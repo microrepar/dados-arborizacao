@@ -8,6 +8,7 @@ from pathlib import Path
 from src.adapters import Controller
 from src.external.app_pages.auth_manager.authentication import streamlit_auth
 
+st.session_state.username = st.session_state.username
 
 HERE = Path(__name__).parent
 
