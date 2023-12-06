@@ -15,6 +15,9 @@ class TreeRegistry(UseCase):
 
         result.error_msg = entity.validate_data()
 
+        if result.qty_msg() > 0:
+            return result
+
         try:
             new_tree = self.repository.registry(entity)
             result.entities = new_tree
