@@ -8,7 +8,6 @@ from pathlib import Path
 from src.adapters import Controller
 from src.external.app_pages.auth_manager.authentication import streamlit_auth
 
-st.session_state.username = st.session_state.username
 
 HERE = Path(__name__).parent
 
@@ -21,6 +20,7 @@ placeholder_messages = st.empty()
 
 # ----- LOGIN MAIN ------
 name, authentication_status, username, authenticator, credentials, user_dict = streamlit_auth(placeholder_messages)
+st.session_state.username = st.session_state.username
 
 if 'btn_signup_page' not in st.session_state:
     if username == 'admin':
