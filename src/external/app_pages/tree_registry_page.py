@@ -140,7 +140,7 @@ def tree_registry_page(username, user_dict):
                 url = '.resources/regioes_plan.geojson'
                 folium.GeoJson(url, name="regioes_plan").add_to(m)
 
-                tooltip = f"Árvore {nome_comum}"
+                tooltip = f"Nova árvore: {nome_comum}"
                 folium.Marker(
                     location=[latitude , longitude],
                     popup=tooltip,
