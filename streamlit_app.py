@@ -48,7 +48,7 @@ if authentication_status:
         )
     
     add_page_title()
-    tree_registry_page(user_dict)
+    tree_registry_page(username, user_dict)
 
 else:
     show_pages([Page("streamlit_app.py", "REGISTRO DE ÁRVORE", "🌳"),])
