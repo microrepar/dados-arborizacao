@@ -5,6 +5,7 @@ from src.adapters import Controller
 
 
 def signup_page(authenticator, credentials, username):
+    st.session_state.username = st.session_state.username
     
     set_usernames = set(credentials['usernames'])
 
