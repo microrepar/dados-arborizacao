@@ -11,10 +11,6 @@ from src.external.app_pages.auth_manager.authentication import streamlit_auth
 
 HERE = Path(__name__).parent
 
-username = st.session_state.get('username')
-user_dict = st.session_state.get('user_dict', {})
-
-
 # emojis: https://www.webfx.com/tools/emoji-cheat-sheet/
 st.set_page_config(layout="wide")
 

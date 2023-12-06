@@ -13,9 +13,6 @@ from src.adapters import Controller
 
 def streamlit_auth(placeholder_msg):
     
-    if 'user_dict' not in st.session_state:
-        st.session_state.user_dict = {}
-
     config_file = Path(__file__).parent / 'config.yaml'
     with config_file.open('rb') as file:
         config = yaml.load(file, Loader=SafeLoader)
@@ -43,8 +40,7 @@ def streamlit_auth(placeholder_msg):
     else:
         placeholder_msg.warning('\n\n'.join(messages['error']))
     
-    st.session_state.user_dict = user_dict
-
+    
     config['credentials'] = credentials
     st.session_state.credentials = credentials
 
