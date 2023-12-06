@@ -215,7 +215,7 @@ if authentication_status:
         selected_tree = {e.id: e for e in entities}.get(tree_id)
         if tree_id is None:
             st.info('Selecione a árvore no mapa e insirá no campo identificação, '
-                    'o mesmo número que foi informado do rótulo da seleção, para '
+                    'o mesmo número informado no rótulo do item selecionado, para '
                     'abrir o formulário de registro de poda.', icon='ℹ️')
         elif selected_tree:
             poda_list = ['Poda de Formação', 'Poda de Limpeza', 'Poda de Redução', 'Poda de Rebaixamento', 'Poda de Desbaste', 'Poda de Emergência'] 
