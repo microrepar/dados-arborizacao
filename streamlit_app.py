@@ -27,25 +27,32 @@ if authentication_status:
     # ---- SIDEBAR ----
     authenticator.logout(f"Logout | {st.session_state.username}", "sidebar")
     
-
-    if username == 'admin':
-        show_pages(
-            [   
-                Page("streamlit_app.py", "REGISTRO DE ÁRVORE", "🌳"),
-                Page("src/external/app_pages/registred_trees_page.py", "Árvores Registradas", "🌳"),
-                Page("src/external/app_pages/pruning_registry_page.py", "Registro de Poda", "✂️"),
-                Page("src/external/app_pages/auth_manager/auth_manager_page.py", "Authentication Manager", "🔑"),
-            ]
-        )
-    else:
-        show_pages(
-            [
-                Page("streamlit_app.py", "REGISTRO DE ÁRVORE", "🌳"),
-                Page("src/external/app_pages/registred_trees_page.py", "Árvores Registradas", "🌳"),
-                Page("src/external/app_pages/pruning_registry_page.py", "Registro de Poda", "✂️"),
-                Page("src/external/app_pages/auth_manager/auth_manager_page.py", "Authentication Manager", "🔑"),
-            ]
-        )
+    show_pages(
+        [   
+            Page("streamlit_app.py", "REGISTRO DE ÁRVORE", "🌳"),
+            Page("src/external/app_pages/registred_trees_page.py", "Árvores Registradas", "🌳"),
+            Page("src/external/app_pages/pruning_registry_page.py", "Registro de Poda", "✂️"),
+            Page("src/external/app_pages/auth_manager/auth_manager_page.py", "Authentication Manager", "🔑"),
+        ]
+    )
+    # if username == 'admin':
+    #     show_pages(
+    #         [   
+    #             Page("streamlit_app.py", "REGISTRO DE ÁRVORE", "🌳"),
+    #             Page("src/external/app_pages/registred_trees_page.py", "Árvores Registradas", "🌳"),
+    #             Page("src/external/app_pages/pruning_registry_page.py", "Registro de Poda", "✂️"),
+    #             Page("src/external/app_pages/auth_manager/auth_manager_page.py", "Authentication Manager", "🔑"),
+    #         ]
+    #     )
+    # else:
+    #     show_pages(
+    #         [
+    #             Page("streamlit_app.py", "REGISTRO DE ÁRVORE", "🌳"),
+    #             Page("src/external/app_pages/registred_trees_page.py", "Árvores Registradas", "🌳"),
+    #             Page("src/external/app_pages/pruning_registry_page.py", "Registro de Poda", "✂️"),
+    #             Page("src/external/app_pages/auth_manager/auth_manager_page.py", "Authentication Manager", "🔑"),
+    #         ]
+    #     )
     
     add_page_title()
     tree_registry_page(username, user_dict)
