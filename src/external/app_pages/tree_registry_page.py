@@ -162,7 +162,7 @@ def tree_registry_page(user_dict):
         #############################################################
         ### REGISTRY TREE ###
         #############################################################
-        st.markdown('## REGISTRY TREE')
+        # st.markdown('## REGISTRY TREE')
 
         controller = Controller()
         request = {
@@ -186,11 +186,15 @@ def tree_registry_page(user_dict):
 
         if 'error' in messages:
             placeholder_messages.error('\n  - '.join(messages['error']), icon='🚨')
+            st.error('\n  - '.join(messages['error']), icon='🚨')
         if 'info' in messages:
             placeholder_messages.info('\n  - '.join(messages['info']), icon='⚠️')
+            st.info('\n  - '.join(messages['info']), icon='⚠️')
         if 'warning' in messages:
             placeholder_messages.info('\n  - '.join(messages['warning']), icon='ℹ️')
+            st.info('\n  - '.join(messages['warning']), icon='ℹ️')
         if 'success' in messages:
             placeholder_messages.info('\n  - '.join(messages['success']), icon='✅')
+            st.info('\n  - '.join(messages['success']), icon='✅')
         #############################################################
             
