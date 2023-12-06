@@ -47,10 +47,9 @@ def tree_registry_page(user_dict):
 
     st.divider()
     col1, col2 = st.columns(2)
-    user_name = col1.text_input('**Responsável pelo Registro**', value=user_dict.get(username).name
-                                                                if user_dict.get(username) 
-                                                                else 'Nome não identificado', 
-                                                                disabled=True)
+    user_name = col1.text_input('**Responsável pelo Registro**', 
+                                value=getattr(user_dict.get(username), 'name', username),
+                                disabled=True)
     st.divider()
     
     with st.container():
