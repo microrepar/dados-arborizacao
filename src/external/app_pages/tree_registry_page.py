@@ -74,8 +74,10 @@ def tree_registry_page(username, user_dict):
                                            index=None, 
                                            placeholder='Selecione uma opção')
         col1, col2 = st.columns(2)
-        altura = col1.number_input('**Altura**:red[*]', value=None, step=.2, format='%.2f')
-        dap = col2.number_input('**DAP (Diâmetro à Altura do Peito)**:red[*]', value=None, step=.2, format='%.2f')
+        altura = col1.number_input('**Altura (metro)**:red[*]', value=None, step=.2, format='%.2f',
+                                   placeholder='Unidade em metros')
+        dap = col2.number_input('**DAP (Diâmetro à Altura do Peito - cm)**:red[*]', value=None, step=1, format='%d',
+                                placeholder='Unidade em centímetros')
         
         st.divider()
         localizacao = st.text_input('**Localização**:red[*]')
