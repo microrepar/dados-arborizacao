@@ -100,10 +100,8 @@ if authentication_status:
         
         placeholder_folium_map = st.empty()
 
-        loc = {}
-        col1, _ = st.columns(2)
 
-        btn_centralizar = st.button('🎯Centralizar Mapa',
+        st.button('🎯Centralizar Mapa',
                   on_click=on_click_get_location)
         
         if st.session_state.flag_btn_centralizar:
@@ -224,17 +222,17 @@ if authentication_status:
             with st.form('registrar_poda'):
                 st.markdown('**Registrar Poda:**')
                 col1, col2, col3 = st.columns(3)
-                nome_especie = col1.text_input('**Espécie**:red[*]',
+                nome_especie = col1.text_input('**Espécie**',
                                             value=selected_tree.especie,
                                             disabled=True)
-                nome_comum = col2.text_input('**Nome Comum**:red[*]',
+                nome_comum = col2.text_input('**Nome Comum**',
                                              value=selected_tree.nome_comum,
                                             disabled=True)        
-                origem_especie = col3.text_input('**Origem**:red[*]', 
+                origem_especie = col3.text_input('**Origem**', 
                                             value=selected_tree.origem,
                                             disabled=True)
                 col1, col2 = st.columns(2)
-                localizacao = st.text_input('**Localização**:red[*]', 
+                localizacao = st.text_input('**Localização**', 
                                             value=selected_tree.localizacao, 
                                             disabled=True)        
                 latitude = col1.text_input('**Latitude**', 

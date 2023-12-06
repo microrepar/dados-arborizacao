@@ -1,13 +1,42 @@
+import time
+from pathlib import Path
+
 import folium
 import pandas as pd
 import streamlit as st
 from folium.plugins import MarkerCluster
 from st_pages import add_page_title
 from streamlit_folium import st_folium
-from pathlib import Path
+from streamlit_js_eval import get_geolocation
+
 from src.adapters import Controller
 from src.external.app_pages.auth_manager.authentication import streamlit_auth
 
+
+def on_click_get_location(*args):
+    if len(args) == 2:
+        st.session_state.flag_folium_map = False
+        st.session_state.latitude = args[0]
+        st.session_state.longitude = args[1]
+    else:
+        st.session_state.flag_folium_map = True
+        st.session_state.pop('latitude')
+        st.session_state.pop('longitude')
+        st.session_state.selected_tree = None
+        
+        
+
+if 'latitude' not in st.session_state:
+    st.session_state.latitude = None
+
+if 'longitude' not in st.session_state:
+    st.session_state.longitude = None
+
+if 'flag_folium_map' not in st.session_state:
+    st.session_state.flag_folium_map = False
+
+if 'selected_tree' not in st.session_state:
+    st.session_state.selected_tree = None
 
 HERE = Path(__name__).parent
 
@@ -78,45 +107,114 @@ if authentication_status:
 
     if 'error' not in messages and entities:
 
-        df = pd.concat([pd.DataFrame(u.data_to_dataframe()) for u in entities], ignore_index=True)
+        latitude = st.session_state.latitude
+        longitude = st.session_state.longitude
 
-        m = folium.Map(location=[df['latitude'].mean(), df['longitude'].mean()],  zoom_start=10)
+        if latitude and longitude:            
 
-        url = '.resources/regioes_plan.geojson'
-        folium.GeoJson(url, name="regioes_plan").add_to(m)
+            m = folium.Map(location=[latitude, longitude],  zoom_start=18)
 
-        cluster = MarkerCluster()
+            url = '.resources/regioes_plan.geojson'
+            folium.GeoJson(url, name="regioes_plan").add_to(m)
 
-        for arvore in entities: 
+            cluster = MarkerCluster()
 
-            tooltip = f"{arvore.nome_comum}"
+            for arvore in entities: 
 
-            folium.Marker(
-                location=[arvore.latitude , arvore.longitude],
-                icon=folium.Icon(color = 'green', icon = 'fa-tree', prefix = 'fa'),
-                popup=folium.Popup(f'''
-                                   <b>Id</b>: {arvore.id}<br>
-                                   <b>Nome Comum</b>: {arvore.nome_comum}<br>
-                                   <b>Espécie</b>: {arvore.especie}<br>
-                                   <b>Fitossanidade</b>: {arvore.fitossanidade}<br>
-                                   ''',
-                                   max_width=300,
-                                   sticky=False),
-                tooltip=tooltip
+                tooltip = f"{arvore.nome_comum}"
 
-            ).add_to(cluster)
+                if st.session_state.selected_tree and st.session_state.selected_tree.id != arvore.id:
+                    flag_icon_color = True
+                elif st.session_state.selected_tree is None:
+                    flag_icon_color = True
+                else:
+                    flag_icon_color = False
 
-        cluster.add_to(m)
+                folium.Marker(
+                    location=[arvore.latitude , arvore.longitude],                    
+                    icon=folium.Icon(
+                        color='green' if  flag_icon_color else 'orange', 
+                        icon='fa-tree', 
+                        prefix='fa'),
+                    popup=folium.Popup(f'''
+                                    <b>Id</b>: {arvore.id}<br>
+                                    <b>Nome Comum</b>: {arvore.nome_comum}<br>
+                                    <b>Espécie</b>: {arvore.especie}<br>
+                                    <b>Fitossanidade</b>: {arvore.fitossanidade}<br>
+                                    ''',
+                                    max_width=300,
+                                    sticky=False),
+                    tooltip=tooltip
 
-        out = st_folium(m, height=400, use_container_width=True , return_on_hover=False)
+                ).add_to(cluster)
 
-        if out["last_object_clicked_popup"]:
+            cluster.add_to(m)
+
+            if st.session_state.flag_folium_map:
+                out = st_folium(m, height=400, use_container_width=True , return_on_hover=False, key='folium_map_key_1', )
+            else:
+                out = st_folium(m, height=400, use_container_width=True , return_on_hover=False, key='folium_map_key_2')
+        
+        else:
+            df = pd.concat([pd.DataFrame(u.data_to_dataframe()) for u in entities], ignore_index=True)
+
+            m = folium.Map(location=[df['latitude'].mean(), df['longitude'].mean()],  zoom_start=10)
+
+            url = '.resources/regioes_plan.geojson'
+            folium.GeoJson(url, name="regioes_plan").add_to(m)
+
+            cluster = MarkerCluster()
+
+            for arvore in entities: 
+
+                tooltip = f"{arvore.nome_comum}"
+
+                if st.session_state.selected_tree and st.session_state.selected_tree.id != arvore.id:
+                    flag_icon_color = True
+                elif st.session_state.selected_tree is None:
+                    flag_icon_color = True
+                else:
+                    flag_icon_color = False
+
+                folium.Marker(
+                    location=[arvore.latitude , arvore.longitude],
+                    icon=folium.Icon(
+                        color='green' if flag_icon_color else 'orange', 
+                        icon='fa-tree',
+                        prefix='fa'),
+                    popup=folium.Popup(f'''
+                                    <b>Id</b>: {arvore.id}<br>
+                                    <b>Nome Comum</b>: {arvore.nome_comum}<br>
+                                    <b>Espécie</b>: {arvore.especie}<br>
+                                    <b>Fitossanidade</b>: {arvore.fitossanidade}<br>
+                                    ''',
+                                    max_width=300,
+                                    sticky=False),
+                    tooltip=tooltip
+
+                ).add_to(cluster)
+
+            cluster.add_to(m)
+            if st.session_state.flag_folium_map:
+                out = st_folium(m, height=400, use_container_width=True , return_on_hover=False, key='folium_map_key_1')
+            else:
+                out = st_folium(m, height=400, use_container_width=True , return_on_hover=False, key='folium_map_key_2')
+        
+        placeholder_btn_ctrl_mapa = st.empty()
+
+        if out["last_object_clicked_popup"] \
+                or st.session_state.selected_tree:
             value_popup = out["last_object_clicked_popup"]            
-            tree_id = int(value_popup.split('\n')[0].split(':')[-1])
-            st.markdown(f'### Detalhes da Árvore Selecionada | id: {tree_id}')
 
-            selected_tree = {e.id: e for e in entities}.get(tree_id)
-            
+            try:
+                tree_id = int(value_popup.split('\n')[0].split(':')[-1])
+            except:
+                tree_id = None
+
+            selected_tree = {e.id: e for e in entities}.get(tree_id) or st.session_state.selected_tree                
+            st.session_state.selected_tree = selected_tree        
+        
+            st.markdown(f'### Detalhes da Árvore Selecionada | id: {selected_tree.id}')
             col1, col2 = st.columns(2)
             nome_especie = col1.text_input('**Espécie**',
                                         value=selected_tree.especie,
@@ -147,6 +245,27 @@ if authentication_status:
             observacao = st.text_area('**Observação:**', 
                                         value=selected_tree.obs
                                         , disabled=True)
-        
+            
+            with placeholder_btn_ctrl_mapa:
+
+                if st.session_state.flag_folium_map:
+                    col1, col2 = st.columns(2)
+                    col2.button('🗑️ Limpar',
+                        on_click=on_click_get_location,
+                        use_container_width=True)
+                    col1.button('🎯Centralizar Mapa',
+                            args=[latitude, longitude],
+                            on_click=on_click_get_location,
+                            use_container_width=True)
+                else:
+                    col1, col2 = st.columns(2)
+                    col2.button('🗑️ Limpar',
+                        on_click=on_click_get_location,
+                        use_container_width=True)
+                    col1.button('🎯Centralizar Mapa',
+                            args=[latitude, longitude],
+                            on_click=on_click_get_location,
+                            use_container_width=True)
+       
         else:
             st.info('Selecione uma árvore no mapa para ver as sua informações detalhadas', icon='ℹ️')
