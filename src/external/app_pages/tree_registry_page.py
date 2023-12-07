@@ -98,6 +98,22 @@ def tree_registry_page(username, user_dict):
                 except:
                     time.sleep(.2)
 
+        tooltip = folium.GeoJsonTooltip(
+            fields=["DISTRITO", "NOME"],
+            aliases=["Distrito: ", "Bairro: "],
+            localize=True,
+            sticky=False,
+            labels=True,
+            style="""
+                background-color: #F0EFEF;
+                border: 3px solid;
+                border-color: black;
+                border-radius: 5px;
+                box-shadow: 6px;                
+            """,
+            max_width=600,
+        )
+
         col1, col2 = placeholder_cols_lat_long.columns(2)
         latitude = col1.text_input('**Latitude**', value=lat_, disabled=True)
         longitude = col2.text_input('**Longitude**', value=long_, disabled=True)
@@ -106,9 +122,9 @@ def tree_registry_page(username, user_dict):
             if entities:
                 m = folium.Map(location=[latitude, longitude],  zoom_start=18)
                 
-                url = '.resources/regioes_plan.geojson'
-                folium.GeoJson(url, name="regioes_plan").add_to(m)
-
+                url = '.resources/abairramento.geojson'
+                folium.GeoJson(url, name="abairramento", tooltip=tooltip).add_to(m)
+    
                 cluster = MarkerCluster()
 
                 for arvore in entities:
@@ -140,8 +156,9 @@ def tree_registry_page(username, user_dict):
             else:
                 m = folium.Map(location=[latitude, longitude],  zoom_start=25)
                 
-                url = '.resources/regioes_plan.geojson'
-                folium.GeoJson(url, name="regioes_plan").add_to(m)
+                url = '.resources/abairramento.geojson'
+                folium.GeoJson(url, name="abairramento", tooltip=tooltip).add_to(m)
+
 
                 tooltip = f"Nova árvore: {nome_comum}"
                 folium.Marker(

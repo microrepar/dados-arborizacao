@@ -9,7 +9,7 @@ WORKDIR /app
 #     git \
 #     && rm -rf /var/lib/apt/lists/*
 
-COPY . /app/
+COPY . /app
 
 RUN pip3 install --upgrade pip setuptools
 RUN pip3 install -r requirements.txt --verbose

@@ -14,17 +14,19 @@ from src.external.app_pages.auth_manager.authentication import streamlit_auth
 
 
 def on_click_get_location(*args):
+    st.session_state.flag_folium_map = not st.session_state.flag_folium_map
     if len(args) == 2:
-        st.session_state.flag_folium_map = False
+        st.session_state.flag_btn_centralizar = False
         st.session_state.latitude = args[0]
         st.session_state.longitude = args[1]
     else:
-        st.session_state.flag_folium_map = True
+        st.session_state.flag_btn_centralizar = True
         st.session_state.pop('latitude')
         st.session_state.pop('longitude')
         st.session_state.selected_tree = None
         
-        
+if 'flag_btn_centralizar' not in st.session_state:
+    st.session_state.flag_btn_centralizar = False    
 
 if 'latitude' not in st.session_state:
     st.session_state.latitude = None
@@ -107,6 +109,22 @@ if authentication_status:
 
     if 'error' not in messages and entities:
 
+        tooltip = folium.GeoJsonTooltip(
+            fields=["DISTRITO", "NOME"],
+            aliases=["Distrito: ", "Bairro: "],
+            localize=True,
+            sticky=False,
+            labels=True,
+            style="""
+                background-color: #F0EFEF;
+                border: 3px solid;
+                border-color: black;
+                border-radius: 4px;
+                box-shadow: 5px;                
+            """,
+            max_width=600,
+        )
+
         latitude = st.session_state.latitude
         longitude = st.session_state.longitude
 
@@ -114,8 +132,8 @@ if authentication_status:
 
             m = folium.Map(location=[latitude, longitude],  zoom_start=18)
 
-            url = '.resources/regioes_plan.geojson'
-            folium.GeoJson(url, name="regioes_plan").add_to(m)
+            url = '.resources/abairramento.geojson'
+            folium.GeoJson(url, name="abairramento", tooltip=tooltip).add_to(m)
 
             cluster = MarkerCluster()
 
@@ -151,17 +169,17 @@ if authentication_status:
             cluster.add_to(m)
 
             if st.session_state.flag_folium_map:
-                out = st_folium(m, height=400, use_container_width=True , return_on_hover=False, key='folium_map_key_1', )
+                out = st_folium(m, height=250, use_container_width=True , return_on_hover=False, key='folium_map_key_1', )
             else:
-                out = st_folium(m, height=400, use_container_width=True , return_on_hover=False, key='folium_map_key_2')
+                out = st_folium(m, height=250, use_container_width=True , return_on_hover=False, key='folium_map_key_2')
         
         else:
             df = pd.concat([pd.DataFrame(u.data_to_dataframe()) for u in entities], ignore_index=True)
 
-            m = folium.Map(location=[df['latitude'].mean(), df['longitude'].mean()],  zoom_start=10)
+            m = folium.Map(location=[df['latitude'].mean(), df['longitude'].mean()],  zoom_start=9)
 
-            url = '.resources/regioes_plan.geojson'
-            folium.GeoJson(url, name="regioes_plan").add_to(m)
+            url = '.resources/abairramento.geojson'
+            folium.GeoJson(url, name="abairramento", tooltip=tooltip).add_to(m)
 
             cluster = MarkerCluster()
 
@@ -196,9 +214,9 @@ if authentication_status:
 
             cluster.add_to(m)
             if st.session_state.flag_folium_map:
-                out = st_folium(m, height=400, use_container_width=True , return_on_hover=False, key='folium_map_key_1')
+                out = st_folium(m, height=250, use_container_width=True , return_on_hover=False, key='folium_map_key_1')
             else:
-                out = st_folium(m, height=400, use_container_width=True , return_on_hover=False, key='folium_map_key_2')
+                out = st_folium(m, height=250, use_container_width=True , return_on_hover=False, key='folium_map_key_2')
         
         placeholder_btn_ctrl_mapa = st.empty()
 
@@ -214,7 +232,7 @@ if authentication_status:
             selected_tree = {e.id: e for e in entities}.get(tree_id) or st.session_state.selected_tree                
             st.session_state.selected_tree = selected_tree        
         
-            st.markdown(f'### Detalhes da Árvore Selecionada | id: {selected_tree.id}')
+            st.markdown(f'### Árvore Selecionada - id: {selected_tree.id}')
             col1, col2 = st.columns(2)
             nome_especie = col1.text_input('**Espécie**',
                                         value=selected_tree.especie,
@@ -248,7 +266,7 @@ if authentication_status:
             
             with placeholder_btn_ctrl_mapa:
 
-                if st.session_state.flag_folium_map:
+                if st.session_state.flag_btn_centralizar:
                     col1, col2 = st.columns(2)
                     col2.button('🗑️ Limpar',
                         on_click=on_click_get_location,

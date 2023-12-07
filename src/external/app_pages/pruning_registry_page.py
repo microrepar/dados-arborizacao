@@ -113,6 +113,22 @@ if authentication_status:
                     break
                 except: 
                     time.sleep(.2)
+
+        tooltip = folium.GeoJsonTooltip(
+            fields=["DISTRITO", "NOME"],
+            aliases=["Distrito: ", "Bairro: "],
+            localize=True,
+            sticky=False,
+            labels=True,
+            style="""
+                background-color: #F0EFEF;
+                border: 3px solid;
+                border-color: black;
+                border-radius: 5px;
+                box-shadow: 6px;                
+            """,
+            max_width=600,
+        )
             
         latitude = st.session_state.latitude
         longitude = st.session_state.longitude
@@ -124,8 +140,8 @@ if authentication_status:
 
             m = folium.Map(location=[latitude, longitude],  zoom_start=18)
 
-            url = '.resources/regioes_plan.geojson'
-            folium.GeoJson(url, name="regioes_plan").add_to(m)
+            url = '.resources/abairramento.geojson'
+            folium.GeoJson(url, name="abairramento", tooltip=tooltip).add_to(m)
 
             cluster = MarkerCluster()
 
@@ -175,10 +191,10 @@ if authentication_status:
         
         else:
             df = pd.concat([pd.DataFrame(u.data_to_dataframe()) for u in entities], ignore_index=True)
-            m = folium.Map(location=[df['latitude'].mean(), df['longitude'].mean()],  zoom_start=11)
+            m = folium.Map(location=[df['latitude'].mean(), df['longitude'].mean()],  zoom_start=9)
 
-            url = '.resources/regioes_plan.geojson'
-            folium.GeoJson(url, name="regioes_plan").add_to(m)
+            url = '.resources/abairramento.geojson'
+            folium.GeoJson(url, name="abairramento", tooltip=tooltip).add_to(m)
             
             cluster = MarkerCluster()
 
