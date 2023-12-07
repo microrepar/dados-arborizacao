@@ -1,14 +1,16 @@
 """Authentication
 """
+import warnings
 from pathlib import Path
 
-import pandas as pd
 import streamlit as st
 import streamlit_authenticator as stauth  # pip install streamlit-authenticator
 import yaml
 from yaml.loader import SafeLoader
 
 from src.adapters import Controller
+
+warnings.filterwarnings('ignore', category=FutureWarning)
 
 
 def streamlit_auth(placeholder_msg):
