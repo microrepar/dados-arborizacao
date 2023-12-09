@@ -36,7 +36,7 @@ if 'flag_folium_map' not in st.session_state:
 # emojis: https://www.webfx.com/tools/emoji-cheat-sheet/
 st.set_page_config(layout="wide")
 
-add_page_title()
+add_page_title(layout='wide')
 
 placeholder_messages = st.empty()
 

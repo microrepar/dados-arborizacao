@@ -45,7 +45,7 @@ HERE = Path(__name__).parent
 # emojis: https://www.webfx.com/tools/emoji-cheat-sheet/
 st.set_page_config(layout="wide")
 
-add_page_title()
+add_page_title(layout='wide')
 
 placeholder_messages = st.empty()
 

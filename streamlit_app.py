@@ -54,7 +54,7 @@ if authentication_status:
     #         ]
     #     )
     
-    add_page_title()
+    add_page_title(layout='wide')
     tree_registry_page(username, user_dict)
 
 else:
