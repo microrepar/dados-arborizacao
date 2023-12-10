@@ -1,3 +1,4 @@
 *__pycache__*
 secrets.toml
 redis_data
+dump.rdb

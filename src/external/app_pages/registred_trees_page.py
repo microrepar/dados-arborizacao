@@ -1,16 +1,38 @@
-import time
+import json
+import math
 from pathlib import Path
 
 import folium
 import pandas as pd
 import streamlit as st
 from folium.plugins import MarkerCluster
+from scipy.interpolate import interp1d
 from st_pages import add_page_title
 from streamlit_folium import st_folium
-from streamlit_js_eval import get_geolocation
 
 from src.adapters import Controller
 from src.external.app_pages.auth_manager.authentication import streamlit_auth
+
+
+def get_zoom_max_by_geometry_height(geometry_height):
+
+    alturas_conhecidas = [
+       0.07800771139449836, 0.0668139, 0.046270852250899, 8.67e-05, 
+       0.0107444, 0.015478, 0.004357956833899, 0.003926012918501698 
+    ]
+    zooms_conhecidos = [
+        11, 12, 12, 14,
+        14, 14, 16, 16,
+    ]
+
+    # Função de interpolação linear
+    interp_func = interp1d(alturas_conhecidas, zooms_conhecidos, kind='linear', fill_value='extrapolate')
+
+    # Exemplos de alturas para estimar o zoom_start
+    # Novo valor de altura para estimar o zoom_start
+    zoom_start_estimado = int(interp_func(geometry_height))
+
+    return zoom_start_estimado
 
 
 def on_click_get_location(*args):
@@ -44,7 +66,6 @@ HERE = Path(__name__).parent
 
 # emojis: https://www.webfx.com/tools/emoji-cheat-sheet/
 st.set_page_config(layout="wide")
-
 add_page_title(layout='wide')
 
 placeholder_messages = st.empty()
@@ -104,10 +125,31 @@ if authentication_status:
     if 'success' in messages:
         placeholder_messages.info('\n  - '.join(messages['success']), icon='✅')
     #############################################################
-
     # placeholder_get_all_tree.write(resp)
 
     if 'error' not in messages and entities:
+
+        df_bairros = pd.read_parquet('.resources/abairramento.parquet')
+        df_bairros = df_bairros.set_index('nome')
+        selected_bairro = st.selectbox('Selecione o bairro', df_bairros.index, index=None)
+
+
+        # Função para estilizar o GeoJSON
+        def style_function(feature):            
+            # Verificar se o bairro atual é o bairro selecionado
+            if feature['properties']['NOME'] == selected_bairro:
+                return {
+                    'fillColor': 'orange',  # Cor quando selecionado
+                    'color': 'blue',
+                    'weight': 4,
+                    'fillOpacity': 0.3
+                }
+            else:
+                return {
+                    'opacity': 0.4,
+                    'fillOpacity': 0.2
+                }
+        
 
         tooltip = folium.GeoJsonTooltip(
             fields=["DISTRITO", "NOME"],
@@ -176,10 +218,25 @@ if authentication_status:
         else:
             df = pd.concat([pd.DataFrame(u.data_to_dataframe()) for u in entities], ignore_index=True)
 
-            m = folium.Map(location=[df['latitude'].mean(), df['longitude'].mean()],  zoom_start=9)
+            if selected_bairro:
+                latitude_media = df_bairros.loc[selected_bairro, 'latitude_media']
+                longitude_media = df_bairros.loc[selected_bairro, 'longitude_media']
+                # geometry_width = df_bairros.loc[selected_bairro, 'geometry_width']
+                geometry_height = df_bairros.loc[selected_bairro, 'geometry_height']
 
-            url = '.resources/abairramento.geojson'
-            folium.GeoJson(url, name="abairramento", tooltip=tooltip).add_to(m)
+                zoom_start = get_zoom_max_by_geometry_height(geometry_height)
+
+                m = folium.Map(location=[latitude_media, longitude_media], zoom_start=zoom_start)
+
+                with open('.resources/abairramento.geojson') as f:
+                    geojson_data = json.load(f)
+                folium.GeoJson(geojson_data, name="abairramento", tooltip=tooltip, style_function=style_function).add_to(m)
+
+            else:
+                m = folium.Map(location=[df['latitude'].mean(), df['longitude'].mean()],  zoom_start=9)
+
+                url = '.resources/abairramento.geojson'
+                folium.GeoJson(url, name="abairramento", tooltip=tooltip).add_to(m)
 
             cluster = MarkerCluster()
 
