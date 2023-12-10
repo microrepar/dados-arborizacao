@@ -18,11 +18,13 @@ def get_zoom_max_by_geometry_height(geometry_height):
 
     alturas_conhecidas = [
        0.07800771139449836, 0.0668139, 0.046270852250899, 8.67e-05, 
-       0.0107444, 0.015478, 0.004357956833899, 0.003926012918501698 
+       0.0107444, 0.015478, 0.004357956833899, 0.003926012918501698,
+       0.07966,
     ]
     zooms_conhecidos = [
         11, 12, 12, 14,
         14, 14, 16, 16,
+        11,
     ]
 
     # Função de interpolação linear
@@ -225,6 +227,9 @@ if authentication_status:
                 geometry_height = df_bairros.loc[selected_bairro, 'geometry_height']
 
                 zoom_start = get_zoom_max_by_geometry_height(geometry_height)
+
+                # print('>>>>>>geometry>>>>>>>>>', abs(geometry_height))
+                # print('>>>>>>zoom_start>>>>>>>>>', zoom_start)
 
                 m = folium.Map(location=[latitude_media, longitude_media], zoom_start=zoom_start)
 
