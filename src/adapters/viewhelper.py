@@ -6,9 +6,10 @@ import inspect
 from collections import OrderedDict
 from enum import Enum
 from typing import Any, Dict, List
+import numpy as np
 
-from src.core.shared import Entity
 from src.core.shared.application import Result
+from src.core.shared.entity import Entity
 from src.core.shared.utils import string_to_date
 
 primitive_types = [int, float, str, bool, bytes, datetime.date, dict, set] + Enum.__subclasses__()
@@ -45,7 +46,7 @@ class GenericViewHelper(AbstractViewHelper):
             for name, param in entity_signature.parameters.items():
 
                 param_value = request.get(f'{class_name}_{name}')
-                if param_value is None: continue
+                if param_value is None or param_value is np.nan: continue
 
                 if param.annotation in primitive_types:
                     if param.annotation in (datetime.date, ):
@@ -55,6 +56,7 @@ class GenericViewHelper(AbstractViewHelper):
                         elif type(param_value) == str:
                             kwargs[name] = string_to_date(param_value)
                     else:
+                        if param_value is None or param_value is np.nan: continue
                         kwargs[name] = param.annotation(param_value)
                 
                 elif getattr(param.annotation, '__base__', None) == Entity:
