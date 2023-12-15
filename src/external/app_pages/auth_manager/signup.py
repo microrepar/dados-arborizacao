@@ -17,7 +17,7 @@ def signup_page(authenticator, credentials, username):
             ### REGISTRY USER ###
             #############################################################
             new_username = (set(credentials['usernames']) - set_usernames).pop()
-            print(new_username)
+            
             controller = Controller()
             request = {
                 'resource'      : '/user/registry',
