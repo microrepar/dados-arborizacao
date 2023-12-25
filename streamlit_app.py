@@ -12,6 +12,7 @@ from src.external.app_pages.tree_registry_page import tree_registry_page
 # emojis: https://www.webfx.com/tools/emoji-cheat-sheet/
 st.set_page_config(layout="wide")
 
+
 placeholder_msg = st.empty()
 
 # ------------------------- Authentication -------------------------
@@ -26,36 +27,7 @@ if authentication_status == None:
 if authentication_status:
     # ---- SIDEBAR ----
     authenticator.logout(f"Logout | {st.session_state.username}", "sidebar")
-    
-    show_pages(
-        [   
-            Page("streamlit_app.py", "REGISTRO DE ÁRVORE", "🌳"),
-            Page("src/external/app_pages/registred_trees_page.py", "Árvores Registradas", "🌳"),
-            Page("src/external/app_pages/pruning_registry_page.py", "Registro de Poda", "✂️"),
-            Page("src/external/app_pages/auth_manager/auth_manager_page.py", "Authentication Manager", "🔑"),
-        ]
-    )
-    # if username == 'admin':
-    #     show_pages(
-    #         [   
-    #             Page("streamlit_app.py", "REGISTRO DE ÁRVORE", "🌳"),
-    #             Page("src/external/app_pages/registred_trees_page.py", "Árvores Registradas", "🌳"),
-    #             Page("src/external/app_pages/pruning_registry_page.py", "Registro de Poda", "✂️"),
-    #             Page("src/external/app_pages/auth_manager/auth_manager_page.py", "Authentication Manager", "🔑"),
-    #         ]
-    #     )
-    # else:
-    #     show_pages(
-    #         [
-    #             Page("streamlit_app.py", "REGISTRO DE ÁRVORE", "🌳"),
-    #             Page("src/external/app_pages/registred_trees_page.py", "Árvores Registradas", "🌳"),
-    #             Page("src/external/app_pages/pruning_registry_page.py", "Registro de Poda", "✂️"),
-    #             Page("src/external/app_pages/auth_manager/auth_manager_page.py", "Authentication Manager", "🔑"),
-    #         ]
-    #     )
-    
-    add_page_title(layout='wide')
+        
+    add_page_title(layout="wide")
     tree_registry_page(username, user_dict)
 
-else:
-    show_pages([Page("streamlit_app.py", "REGISTRO DE ÁRVORE", "🌳"),])

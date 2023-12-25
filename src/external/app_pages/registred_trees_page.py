@@ -68,7 +68,6 @@ HERE = Path(__name__).parent
 
 # emojis: https://www.webfx.com/tools/emoji-cheat-sheet/
 st.set_page_config(layout="wide")
-add_page_title(layout='wide')
 
 placeholder_messages = st.empty()
 
@@ -98,8 +97,9 @@ if authentication_status == None:
 if authentication_status:    
     # ---- LOGOUT SIDEBAR ----
     authenticator.logout(f"Logout | {st.session_state.username}", "sidebar")
-
     st.sidebar.divider()
+
+    add_page_title(layout='wide')
     
     #############################################################
     ### ALL USERS PLACEHOLDER###

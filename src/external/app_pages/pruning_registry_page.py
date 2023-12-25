@@ -36,8 +36,6 @@ if 'flag_folium_map' not in st.session_state:
 # emojis: https://www.webfx.com/tools/emoji-cheat-sheet/
 st.set_page_config(layout="wide")
 
-add_page_title(layout='wide')
-
 placeholder_messages = st.empty()
 
 # ----- LOGIN MAIN ------
@@ -66,6 +64,8 @@ if authentication_status == None:
 if authentication_status:    
     # ---- LOGOUT SIDEBAR ----
     authenticator.logout(f"Logout | {st.session_state.username}", "sidebar")
+    
+    add_page_title(layout='wide')
 
     #############################################################
     ### ALL TREE PLACEHOLDER###

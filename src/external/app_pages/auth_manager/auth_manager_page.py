@@ -23,10 +23,7 @@ def on_click_btn_pages(*args, **kwargs):
 # emojis: https://www.webfx.com/tools/emoji-cheat-sheet/
 st.set_page_config(layout="wide")
 
-add_page_title(layout='wide')
-
 placeholder_msg = st.empty()
-
 
 # ----- LOGIN MAIN ------
 name, authentication_status, username, authenticator, credentials, user_dict = streamlit_auth(placeholder_msg)
@@ -55,6 +52,8 @@ if authentication_status:
     # ---- LOGOUT SIDEBAR ----
     authenticator.logout(f"Logout | {st.session_state.username}", "sidebar")
     st.sidebar.divider()
+
+    add_page_title(layout='wide')
 
     # ----------Sidebar Buttons----------
     if username == 'admin':        
